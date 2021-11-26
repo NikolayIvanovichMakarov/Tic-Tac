@@ -8,6 +8,7 @@
 typedef uint8_t TIC_TAC_BOOL;
 typedef uint8_t TIC_TAC_ERROR;
 typedef uint8_t TIC_TAC_PIECE;
+typedef TIC_TAC_PIECE** TIC_TAC_FIELD;
 typedef uint8_t TIC_TAC_PLAYER;
 typedef uint8_t TIC_TAC_WINNER;
 
@@ -18,6 +19,7 @@ typedef uint8_t TIC_TAC_WINNER;
 /*! TIC_TAC_ERROR */
 #define TIC_TAC_ERROR_NO_PROBLEM 		0x00
 #define TIC_TAC_ERROR_NOT_EMPTY_PIECE 	0x01
+#define TIC_TAC_ERROR_BROKEN_ARGS 		0x02
 #define TIC_TAC_ERROR_MEMORRY_PROBLEM 	0xff
 
 /*! TIC_TAC_PIECE */
