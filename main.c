@@ -24,9 +24,6 @@ size_t GET_SIZE()
 #define  GET_SIZE_Y() GET_SIZE()
 
 
-//! FIELD
-TIC_TAC_PIECE** g_p_field = NULL;
-
 //! Functional
 TIC_TAC_BOOL
 clean_tic_tac_field(TIC_TAC_PIECE ** p_field)
@@ -235,7 +232,6 @@ can_move(TIC_TAC_PIECE * const * const p_field, size_t pos_x, size_t pos_y)
 /////////////  players /////////////
 ////////////////////////////////////
 
-static TIC_TAC_PLAYER g_s_cur_player = TIC_TAC_PLAYER_NO;
 
 ////////////////////////////////////
 //////////// game state ////////////
@@ -251,7 +247,7 @@ typedef enum
 static e_programm_state g_s_cur_state = e_ps_init;
 
 void
-step()
+step(TIC_TAC_PIECE **p_field, TIC_TAC_PLAYER p_player)
 {
 	size_t x,y;
 	int fl;
@@ -260,15 +256,15 @@ step()
 	do
 	{
 		fl = 1;
-		printf("\nNow step player <%s>\n",g_c_str_players[g_s_cur_player]);
+		printf("\nNow step player <%s>\n",g_c_str_players[p_player]);
 		printf("\nPlease, enter x and y ");
 		
 		scan_fl = scanf("%zu%zu",&x,&y);
 		if (scan_fl == 2)
 		{
-			if (can_move(g_p_field, x,y) == TIC_TAC_BOOL_TRUE)
+			if (can_move(p_field, x,y) == TIC_TAC_BOOL_TRUE)
 			{
-				set_piece(g_p_field, x,y,g_s_cur_player);
+				set_piece(p_field, x,y,p_player);
 				fl = 0;
 			}
 		}
@@ -284,34 +280,33 @@ step()
 }
 
 void
-change_player()
+change_player(TIC_TAC_PLAYER * p_player)
 {
-	if (g_s_cur_player == TIC_TAC_PLAYER_TIC)
-		g_s_cur_player = TIC_TAC_PLAYER_TAC;
+	if ((*p_player) == TIC_TAC_PLAYER_TIC)
+		(*p_player) = TIC_TAC_PLAYER_TAC;
 	else
-		g_s_cur_player = TIC_TAC_PLAYER_TIC;
+		(*p_player) = TIC_TAC_PLAYER_TIC;
 }
 
 void
-action_state()
+action_state(TIC_TAC_PIECE*** p_field, TIC_TAC_PLAYER *p_player)
 {
-
 	TIC_TAC_WINNER winner;
 	switch(g_s_cur_state)
 	{
 		case e_ps_init:
-			init_tic_tac_field(&g_p_field);
-			g_s_cur_player = TIC_TAC_PLAYER_TIC;
-			view_field(g_p_field, GET_SIZE_X(), GET_SIZE_Y());
+			init_tic_tac_field(p_field);
+			(*p_player) = TIC_TAC_PLAYER_TIC;
+			view_field(*p_field, GET_SIZE(), GET_SIZE());
 			change_state(e_ps_main_loop);
 			break;
 		case e_ps_main_loop:
-			step();
-			winner = tic_tac_get_winner(g_p_field);
-			view_field(g_p_field, GET_SIZE_X(), GET_SIZE_Y());
+			step(*p_field,*p_player);
+			winner = tic_tac_get_winner(*p_field);
+			view_field(*p_field, GET_SIZE(), GET_SIZE());
 			if (winner == TIC_TAC_WINNER_NO_WINNER)
 			{
-				change_player();
+				change_player(p_player);
 			}
 			else
 			{
@@ -349,14 +344,17 @@ change_state(e_programm_state e_ps_new_state)
 int
 main(int argc, char **argv)
 {
+	TIC_TAC_PLAYER cur_player = TIC_TAC_PLAYER_NO;
+	TIC_TAC_PIECE** p_field = NULL;
+
 	//! Init
 	g_s_cur_state = e_ps_init;
 
 	while(g_s_cur_state != e_ps_game_is_over)
 	{
-		action_state();
+		action_state(&p_field,&cur_player);
 	};
-	action_state();
+	action_state(&p_field,&cur_player);
 
 	return 0;
 }
