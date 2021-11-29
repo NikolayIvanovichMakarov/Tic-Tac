@@ -28,7 +28,7 @@ typedef uint8_t TIC_TAC_WINNER;
 #define TIC_TAC_PIECE_TAC				0x02
 
 /*! TIC_TAC_PLAYER */
-#define TIC_TAC_PLAYER_NO				0x01
+#define TIC_TAC_PLAYER_NO				0x00
 #define TIC_TAC_PLAYER_TIC				0x01
 #define TIC_TAC_PLAYER_TAC				0x02
 
